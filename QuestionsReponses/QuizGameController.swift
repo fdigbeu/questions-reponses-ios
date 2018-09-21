@@ -195,9 +195,11 @@ class QuizGameController: UITableViewController {
             let selectedBorderColor = hexStringToUIColor(hex: "#F5876E")
             let unSelectedBorderColor = hexStringToUIColor(hex: "#7a7999")
             //--
-            labelChoix1.layer.borderColor = unSelectedBorderColor.cgColor
-            labelChoix2.layer.borderColor = unSelectedBorderColor.cgColor
-            labelChoix3.layer.borderColor = unSelectedBorderColor.cgColor
+            if allQuizzAnswered.index(forKey: numeroQuestion!) == nil{
+                labelChoix1.layer.borderColor = unSelectedBorderColor.cgColor
+                labelChoix2.layer.borderColor = unSelectedBorderColor.cgColor
+                labelChoix3.layer.borderColor = unSelectedBorderColor.cgColor
+            }
             //--
             if choixSelected! == "choix1"{
                 labelChoix1.layer.borderColor = selectedBorderColor.cgColor
@@ -465,6 +467,9 @@ class QuizGameController: UITableViewController {
     
     // Load parameters data
     private func loadParameterData(){
+        cellQuestion.isUserInteractionEnabled = false
+        cellScore.isUserInteractionEnabled = false
+        //--
         totalQuestion = 10
         numeroQuestion = 1
         totalBonneReponse = 0
