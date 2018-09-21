@@ -619,6 +619,9 @@
                                                     <rect key="frame" x="128" y="2" width="64" height="64"/>
                                                     <state key="normal" image="button_ok_64"/>
                                                     <state key="highlighted" image="button_ok_hover_64"/>
+                                                    <connections>
+                                                        <action selector="btnValiderQuiz:" destination="sYz-n6-d1t" eventType="touchUpInside" id="7Z8-7U-dkx"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <color key="backgroundColor" red="0.8862745098" green="0.8862745098" blue="0.90980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -647,6 +650,7 @@
                         <outlet property="buttonExplication" destination="flP-Im-B5e" id="oAM-pq-BFC"/>
                         <outlet property="buttonQuestionPrecedente" destination="2BS-E8-w3x" id="RuG-0l-VgW"/>
                         <outlet property="buttonQuestionSuivante" destination="7gJ-aT-rKx" id="8An-IE-O7o"/>
+                        <outlet property="buttonValiderQuiz" destination="JAq-bm-G78" id="jKE-Xi-0C0"/>
                         <outlet property="cellBtnPrecSuiv" destination="7nB-yV-8iX" id="d5q-b2-thV"/>
                         <outlet property="cellChoix1" destination="7g4-to-hvl" id="Uo2-OX-UKS"/>
                         <outlet property="cellChoix2" destination="UTa-BR-0Ur" id="mff-N4-Ac9"/>

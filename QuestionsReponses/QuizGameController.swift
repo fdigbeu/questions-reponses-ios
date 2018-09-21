@@ -54,10 +54,69 @@ class QuizGameController: UITableViewController {
     @IBOutlet weak var cellBtnPrecSuiv: UITableViewCell!
     @IBOutlet weak var buttonQuestionPrecedente: UIButton!
     @IBAction func btnQuestionPrecedente(_ sender: Any) {
+        // If this quiz has been saved
+        if allQuizzAnswered.index(forKey: numeroQuestion!-1) != nil && numeroQuestion!-1 >= 1{
+            buttonQuestionSuivante.isHidden = false
+            //--
+            showViewReponse = true
+            numeroQuestion = numeroQuestion! - 1
+            let quizSaved = allQuizzAnswered[numeroQuestion!]!
+            numberRandom = quizSaved.getRandomValue
+            self.loadQuizQuestion()
+            //--
+            buttonQuestionPrecedente.isHidden = numeroQuestion <= 1
+        }
     }
     @IBOutlet weak var buttonQuestionSuivante: UIButton!
     @IBAction func btnQuestionSuivante(_ sender: Any) {
+        buttonQuestionSuivante.isHidden = true
+        showViewReponse = false
+        // If quiz is not finished
+        if(numeroQuestion+1 <= totalQuestion){
+            numeroQuestion = numeroQuestion! + 1
+            if allNumberRandom.index(forKey: numeroQuestion) != nil{
+                numberRandom = allNumberRandom[numeroQuestion]!
+                //--
+                if allQuizzAnswered.index(forKey: numeroQuestion!) != nil{
+                    showViewReponse = true
+                    buttonQuestionSuivante.isHidden = false
+                }
+            }
+            self.loadQuizQuestion()
+        }
     }
+    @IBOutlet weak var buttonValiderQuiz: UIButton!
+    @IBAction func btnValiderQuiz(_ sender: Any) {
+        isGoodAnswer = currentQuiz.getChoixCorrecte.lowercased()==choixSelected!
+        // Save user choice
+        if allQuizzAnswered.index(forKey: numeroQuestion!) == nil{
+            var reponseDetail:String!
+            if(currentQuiz.getChoixCorrecte.lowercased()=="choix1") { reponseDetail = currentQuiz.getChoix1 }
+            if(currentQuiz.getChoixCorrecte.lowercased()=="choix2") { reponseDetail = currentQuiz.getChoix2 }
+            if(currentQuiz.getChoixCorrecte.lowercased()=="choix3") { reponseDetail = currentQuiz.getChoix3 }
+            let confirmReponse = isGoodAnswer ? "TRÈS BIEN RÉPONDU\nLa réponse est effectivement:" : "MAUVAISE RÉPONSE\nLa bonne réponse est:"
+            let quiz = Quiz(question: currentQuiz.getQuestion, categorie: currentQuiz.getCategorie, choix1: currentQuiz.getChoix1, choix2: currentQuiz.getChoix2, choix3: currentQuiz.getChoix2, choixcorrecte: currentQuiz.getChoixCorrecte, explication: currentQuiz.getExplication, userChoix: choixSelected!, randomValue: numberRandom, confirmReponse: confirmReponse+" "+reponseDetail.uppercased())
+            allQuizzAnswered.updateValue(quiz, forKey: numeroQuestion!)
+            print("allQuizzAnswered HAS BEEN SAVED")
+            print("Total after saved = \(allQuizzAnswered.count)")
+        }
+        
+        // If good answer
+        if(isGoodAnswer){
+            showViewReponse = false
+            totalBonneReponse = totalBonneReponse! + 1
+            if(numeroQuestion! + 1 <= totalQuestion){
+                numeroQuestion = numeroQuestion! + 1
+            }
+        }
+        else{
+            showViewReponse = true
+            totalMauvaiseReponse = totalMauvaiseReponse! + 1
+        }
+        //--
+        self.loadQuizQuestion()
+    }
+    
     
     // Ref attributes
     var quizMenuSelected:String?
@@ -73,6 +132,7 @@ class QuizGameController: UITableViewController {
     private var showViewReponse = false
     private var isGoodAnswer = false
     private var numberRandom = 0
+    private var allNumberRandom: [Int : Int] = [:]
     
     private var totalQuestion:Int!
     private var numeroQuestion:Int!
@@ -126,32 +186,34 @@ class QuizGameController: UITableViewController {
             print("Total before saved = \(allQuizzAnswered.count)")
             //--
             choixSelected = "choix\(indexPathRow)"
-            isGoodAnswer = currentQuiz.getChoixCorrecte.lowercased()==choixSelected!
-            // Save user choice
-            if allQuizzAnswered.index(forKey: numeroQuestion!) == nil{
-                var reponseDetail:String!
-                if(currentQuiz.getChoixCorrecte.lowercased()=="choix1") { reponseDetail = currentQuiz.getChoix1 }
-                if(currentQuiz.getChoixCorrecte.lowercased()=="choix2") { reponseDetail = currentQuiz.getChoix2 }
-                if(currentQuiz.getChoixCorrecte.lowercased()=="choix3") { reponseDetail = currentQuiz.getChoix3 }
-                let confirmReponse = isGoodAnswer ? "TRÈS BIEN RÉPONDU\nLa réponse est effectivement:" : "MAUVAISE RÉPONSE\nLa bonne réponse est:"
-                let quiz = Quiz(question: currentQuiz.getQuestion, categorie: currentQuiz.getCategorie, choix1: currentQuiz.getChoix1, choix2: currentQuiz.getChoix2, choix3: currentQuiz.getChoix2, choixcorrecte: currentQuiz.getChoixCorrecte, explication: currentQuiz.getExplication, userChoix: choixSelected!, randomValue: numberRandom, confirmReponse: confirmReponse+" "+reponseDetail.uppercased())
-                allQuizzAnswered.updateValue(quiz, forKey: numeroQuestion!)
-                print("allQuizzAnswered HAS BEEN SAVED")
-                print("Total after saved = \(allQuizzAnswered.count)")
-            }
-
-            // If good answer
-            if(isGoodAnswer){
-                showViewReponse = false
-                totalBonneReponse = totalBonneReponse! + 1
-                numeroQuestion = numeroQuestion! + 1
-            }
-            else{
-                showViewReponse = true
-                totalMauvaiseReponse = totalMauvaiseReponse! + 1
+            print("choixSelected =====> "+choixSelected)
+            //--
+            if allQuizzAnswered.index(forKey: numeroQuestion!) == nil && indexPathRow > 0 && indexPathRow < 4{
+                buttonValiderQuiz.isHidden = false
             }
             //--
-            self.loadQuizQuestion()
+            let selectedBorderColor = hexStringToUIColor(hex: "#F5876E")
+            let unSelectedBorderColor = hexStringToUIColor(hex: "#7a7999")
+            //--
+            labelChoix1.layer.borderColor = unSelectedBorderColor.cgColor
+            labelChoix2.layer.borderColor = unSelectedBorderColor.cgColor
+            labelChoix3.layer.borderColor = unSelectedBorderColor.cgColor
+            //--
+            if choixSelected! == "choix1"{
+                labelChoix1.layer.borderColor = selectedBorderColor.cgColor
+                labelChoix2.layer.borderColor = unSelectedBorderColor.cgColor
+                labelChoix3.layer.borderColor = unSelectedBorderColor.cgColor
+            }
+            if choixSelected! == "choix2"{
+                labelChoix1.layer.borderColor = unSelectedBorderColor.cgColor
+                labelChoix2.layer.borderColor = selectedBorderColor.cgColor
+                labelChoix3.layer.borderColor = unSelectedBorderColor.cgColor
+            }
+            if choixSelected! == "choix3"{
+                labelChoix1.layer.borderColor = unSelectedBorderColor.cgColor
+                labelChoix2.layer.borderColor = unSelectedBorderColor.cgColor
+                labelChoix3.layer.borderColor = selectedBorderColor.cgColor
+            }
         }
     }
     
@@ -166,6 +228,16 @@ class QuizGameController: UITableViewController {
     private func loadQuizQuestion(){
         numberRandom = showViewReponse ? numberRandom : randomValue(allQuiz.count)
         currentQuiz = allQuiz[numberRandom]
+        //--
+        buttonValiderQuiz.isHidden = true
+        buttonQuestionPrecedente.isHidden = true
+        if numeroQuestion > 1{
+            buttonQuestionPrecedente.isHidden = false
+        }
+        buttonQuestionSuivante.isHidden = true
+        if showViewReponse{
+            buttonQuestionSuivante.isHidden = false
+        }
         //--
         labelQuestion.text = currentQuiz.getQuestion
         //--
@@ -191,17 +263,46 @@ class QuizGameController: UITableViewController {
         //--
         loadViewReponseData()
         //--
-        quizGameTableView.reloadData()
+        if numeroQuestion <= totalQuestion {
+            quizGameTableView.reloadData()
+            // If game is ended
+            if totalBonneReponse+totalMauvaiseReponse == totalQuestion{
+                // Hide next button
+                buttonQuestionSuivante.isHidden = true
+                // Game is ended
+                let alertController = UIAlertController(title: "FIN DE LA PARTIE", message: "Le jeu est terminé ! vous avez obtenu un score de \(totalBonneReponse!) sur \(totalQuestion!)", preferredStyle: .alert)
+                let actionOK = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction) in
+                    self.navigationController?.popViewController(animated: true)
+                }
+                alertController.addAction(actionOK)
+                self.present(alertController, animated: true, completion: nil)
+            }
+        }
     }
     
     private func loadViewReponseData(){
+        var goodOrBadAnswer = isGoodAnswer
+        // Allow cells to be selected
+        cellChoix1.isUserInteractionEnabled = true
+        cellChoix2.isUserInteractionEnabled = true
+        cellChoix3.isUserInteractionEnabled = true
         if(showViewReponse){
             if allQuizzAnswered.index(forKey: numeroQuestion!) != nil{
                 let quizSaved = allQuizzAnswered[numeroQuestion!]!
                 labelReponse.text = quizSaved.getConfirmReponse
+                goodOrBadAnswer = quizSaved.getUserChoix.lowercased() == quizSaved.getChoixCorrecte.lowercased()
+                // Don't allow cells to be selected
+                cellChoix1.isUserInteractionEnabled = false
+                cellChoix2.isUserInteractionEnabled = false
+                cellChoix3.isUserInteractionEnabled = false
+                // Show user choice
+                let selectedBorderColor = hexStringToUIColor(hex: "#F5876E")
+                if quizSaved.getUserChoix.lowercased() == "choix1"{ labelChoix1.layer.borderColor = selectedBorderColor.cgColor }
+                if quizSaved.getUserChoix.lowercased() == "choix2"{ labelChoix2.layer.borderColor = selectedBorderColor.cgColor }
+                if quizSaved.getUserChoix.lowercased() == "choix3"{ labelChoix3.layer.borderColor = selectedBorderColor.cgColor }
             }
             //--
-            viewUserAnswer(success: isGoodAnswer)
+            viewUserAnswer(success: goodOrBadAnswer)
         }
     }
     
@@ -289,7 +390,14 @@ class QuizGameController: UITableViewController {
     
     // Random
     private func randomValue(_ n:Int) -> Int{
-        return Int(arc4random_uniform(UInt32(n)))
+        var randomValue = Int(arc4random_uniform(UInt32(n)))
+        if allNumberRandom.index(forKey: numeroQuestion!) == nil{
+            allNumberRandom.updateValue(randomValue, forKey: numeroQuestion!)
+        }
+        else{
+            randomValue = allNumberRandom[numeroQuestion!]!
+        }
+        return randomValue
     }
     
     // View visibility
@@ -357,11 +465,10 @@ class QuizGameController: UITableViewController {
     
     // Load parameters data
     private func loadParameterData(){
-        totalQuestion = 20
+        totalQuestion = 10
         numeroQuestion = 1
         totalBonneReponse = 0
         totalMauvaiseReponse = 0
-        
         // borderColor
         var borderColor = hexStringToUIColor(hex: "#12114A")
         cellScore.contentView.layer.borderWidth = 2.0
