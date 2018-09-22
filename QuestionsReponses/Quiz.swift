@@ -65,12 +65,13 @@ class Quiz{
         self.keyGame = keyGame
     }
     
-    init(date:String, totalQuestion:Int, totalTrouve:Int, totalErreur:Int, keyGame:String) {
+    init(date:String, totalQuestion:Int, totalTrouve:Int, totalErreur:Int, keyGame:String, categorie:String) {
         self.date = date
         self.totalQuestion = totalQuestion
         self.totalTrouve = totalTrouve
         self.totalErreur = totalErreur
         self.keyGame = keyGame
+        self.categorie = categorie
     }
     
     var getQuestion:String { return question }

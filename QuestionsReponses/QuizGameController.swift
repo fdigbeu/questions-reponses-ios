@@ -152,12 +152,12 @@ class QuizGameController: UITableViewController {
         
         loadParameterData()
         
-        keyGame = "\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))"
-        daoQuiz = DAOQuiz()
-        daoQuiz.addScore(date: currentStringDate(), totalQuestion: totalQuestion!, totalTrouve: totalBonneReponse!, totalErreur: totalMauvaiseReponse!, keyGame: keyGame!)
-        
         if quizMenuSelected != nil{
             title = quizMenuSelected!
+            //--
+            keyGame = "\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))"
+            daoQuiz = DAOQuiz()
+            daoQuiz.addScore(date: currentStringDate(), totalQuestion: totalQuestion!, totalTrouve: totalBonneReponse!, totalErreur: totalMauvaiseReponse!, keyGame: keyGame!, categorie: quizMenuSelected!)
             //--
             loadJsonDataFromMenuSelected{ (allQuiz) in
                 // Download completed.
@@ -284,7 +284,7 @@ class QuizGameController: UITableViewController {
                 // Hide next button
                 buttonQuestionSuivante.isHidden = true
                 // Game is ended
-                let alertController = UIAlertController(title: "FIN DE LA PARTIE", message: "Le jeu est terminé ! vous avez obtenu un score de \(totalBonneReponse!) sur \(totalQuestion!)", preferredStyle: .alert)
+                let alertController = UIAlertController(title: "Fin de la partie", message: "Le jeu est terminé ! vous avez obtenu un score de \(totalBonneReponse!) sur \(totalQuestion!)", preferredStyle: .alert)
                 let actionOK = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction) in
                     self.navigationController?.popViewController(animated: true)
                 }

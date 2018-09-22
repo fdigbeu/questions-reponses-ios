@@ -9,78 +9,62 @@
 import UIKit
 
 class ScoreController: UITableViewController {
+    
+    var typeOfQuizSelected:String? // Quiz terminés, Quiz en cours
+    private var allQuiz = [Quiz]()
+    private var daoQuiz:DAOQuiz!
+    private var imageIcone:UIImage!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        if typeOfQuizSelected != nil{
+            title = typeOfQuizSelected!
+            daoQuiz = DAOQuiz()
+            if typeOfQuizSelected! == "Quiz en cours"{
+                allQuiz = daoQuiz.getAllScoresInProgress()
+                imageIcone = #imageLiteral(resourceName: "quiz_not_end_48")
+            }
+            else{
+                allQuiz = daoQuiz.getAllScoresFinished()
+                imageIcone = #imageLiteral(resourceName: "quiz_end_48")
+            }
+            print("========================== TOTAL = \(allQuiz.count) ==========================")
+            self.tableView.tableFooterView = UIView()
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     // MARK: - Table view data source
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    /*override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
-    }
+    }*/
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return allQuiz.count
     }
-
-    /*
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "idScoreCell") as? ScoreCell else { return UITableViewCell() }
+        let quiz = allQuiz[indexPath.row]
+        return cell.loadDataCell(imageValue:imageIcone, titleValue:quiz.getCategorie, dateValue:quiz.getDate, totalTrouve:quiz.getTotalTrouve, totalQuestion:quiz.getTotalQuestion)
     }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("Numéro du score sélectionné : \(indexPath.row)")
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+    
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
 
     /*
     // MARK: - Navigation

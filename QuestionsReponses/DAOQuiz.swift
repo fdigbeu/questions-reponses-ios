@@ -24,7 +24,7 @@ class DAOQuiz{
             return
         }
         // Create score table
-        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS "+tableScore+" (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, totalQuestion INTEGER, totalTrouve INTEGER, totalErreur INTEGER, keyGame TEXT)", nil, nil, nil) != SQLITE_OK {
+        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS "+tableScore+" (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, totalQuestion INTEGER, totalTrouve INTEGER, totalErreur INTEGER, keyGame TEXT, categorie TEXT)", nil, nil, nil) != SQLITE_OK {
             let errmsg = String(cString: sqlite3_errmsg(db)!)
             print("Error creating qr_score table: \(errmsg)")
             return
@@ -58,8 +58,10 @@ class DAOQuiz{
             let totalTrouve = Int(sqlite3_column_int(stmt, 3))
             let totalErreur = Int(sqlite3_column_int(stmt, 4))
             let keyGame = String(cString: sqlite3_column_text(stmt, 5))
+            let categorie = String(cString: sqlite3_column_text(stmt, 6))
+            print("================ getAllScoresInProgress() : \(date) === \(categorie) === \(totalTrouve)/\(totalQuestion)")
             if totalTrouve+totalErreur < totalQuestion{
-                let quiz = Quiz(date: date, totalQuestion: totalQuestion, totalTrouve: totalTrouve, totalErreur: totalErreur, keyGame: keyGame)
+                let quiz = Quiz(date: date, totalQuestion: totalQuestion, totalTrouve: totalTrouve, totalErreur: totalErreur, keyGame: keyGame, categorie:categorie)
                 allQuizz.append(quiz)
             }
         }
@@ -84,18 +86,20 @@ class DAOQuiz{
             let totalTrouve = Int(sqlite3_column_int(stmt, 3))
             let totalErreur = Int(sqlite3_column_int(stmt, 4))
             let keyGame = String(cString: sqlite3_column_text(stmt, 5))
+            let categorie = String(cString: sqlite3_column_text(stmt, 6))
+            print("================ getAllScoresFinished() : \(date) === \(categorie) === \(totalTrouve)/\(totalQuestion)")
             if totalTrouve+totalErreur == totalQuestion{
-                let quiz = Quiz(date: date, totalQuestion: totalQuestion, totalTrouve: totalTrouve, totalErreur: totalErreur, keyGame: keyGame)
+                let quiz = Quiz(date: date, totalQuestion: totalQuestion, totalTrouve: totalTrouve, totalErreur: totalErreur, keyGame: keyGame, categorie:categorie)
                 allQuizz.append(quiz)
             }
         }
         return allQuizz
     }
     
-    func addScore(date:String!, totalQuestion:Int!, totalTrouve:Int!, totalErreur:Int!, keyGame:String!) -> Void {
+    func addScore(date:String!, totalQuestion:Int!, totalTrouve:Int!, totalErreur:Int!, keyGame:String!, categorie:String!) -> Void {
          var stmt: OpaquePointer?
         //The insert query
-        let queryString = "INSERT INTO \(tableScore) (date, totalQuestion, totalTrouve, totalErreur, keyGame) VALUES ('\(date!)', '\(totalQuestion!)', '\(totalTrouve!)', '\(totalErreur!)', '\(keyGame!)')"
+        let queryString = "INSERT INTO \(tableScore) (date, totalQuestion, totalTrouve, totalErreur, keyGame) VALUES ('\(date!)', '\(totalQuestion!)', '\(totalTrouve!)', '\(totalErreur!)', '\(keyGame!)', '\(categorie!)')"
         //Preparing the query
         if sqlite3_prepare(db, queryString, -1, &stmt, nil) != SQLITE_OK{
             let errmsg = String(cString: sqlite3_errmsg(db)!)
@@ -114,7 +118,7 @@ class DAOQuiz{
     func modifyScore(totalTrouve:Int!, totalErreur:Int!, keyGame:String!) -> Void {
         var stmt: OpaquePointer?
         //The update query
-        let queryString = "UPDATE \(tableScore) SET totalTrouve = '\(totalTrouve!)', totalErreur = '\(totalErreur!)' WHERE keyGame LIKE '\(keyGame!)'"
+        let queryString = "UPDATE \(tableScore) SET totalTrouve = '\(totalTrouve!)', totalErreur = '\(totalErreur!)' WHERE keyGame = '\(keyGame!)'"
         //Preparing the query
         if sqlite3_prepare(db, queryString, -1, &stmt, nil) != SQLITE_OK{
             let errmsg = String(cString: sqlite3_errmsg(db)!)
@@ -170,7 +174,7 @@ class DAOQuiz{
     func getAllGames(keyGame:String!) -> [Quiz] {
         var stmt: OpaquePointer?
         //This is our select query
-        let queryString = "SELECT * FROM "+tableGame+" WHERE keyGame LIKE '\(keyGame!)'"
+        let queryString = "SELECT * FROM "+tableGame+" WHERE keyGame = '\(keyGame!)'"
         //Preparing the query
         if sqlite3_prepare(db, queryString, -1, &stmt, nil) != SQLITE_OK{
             let errmsg = String(cString: sqlite3_errmsg(db)!)
