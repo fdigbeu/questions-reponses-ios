@@ -99,6 +99,8 @@ class QuizGameController: UITableViewController {
             allQuizzAnswered.updateValue(quiz, forKey: numeroQuestion!)
             print("allQuizzAnswered HAS BEEN SAVED")
             print("Total after saved = \(allQuizzAnswered.count)")
+            //--
+            daoQuiz.addGame(keyGame:keyGame!, question:currentQuiz.getQuestion, categorie:currentQuiz.getCategorie, choix1:currentQuiz.getChoix1, choix2:currentQuiz.getChoix2, choix3:currentQuiz.getChoix3, choixCorrecte:currentQuiz.getChoixCorrecte, explication:currentQuiz.getExplication, userChoix:choixSelected!, randomValue:String(numberRandom), confirmeReponse:confirmReponse+" "+reponseDetail.uppercased())
         }
         
         // If good answer
@@ -114,6 +116,8 @@ class QuizGameController: UITableViewController {
             totalMauvaiseReponse = totalMauvaiseReponse! + 1
         }
         //--
+        daoQuiz.modifyScore(totalTrouve: totalBonneReponse!, totalErreur: totalMauvaiseReponse!, keyGame: keyGame!)
+        //--
         self.loadQuizQuestion()
     }
     
@@ -122,6 +126,9 @@ class QuizGameController: UITableViewController {
     var quizMenuSelected:String?
     
     let segueIdentifier = "quizGameToExplication"
+    
+    private var daoQuiz:DAOQuiz!
+    private var keyGame:String!
     
     private var allQuiz = [Quiz]()
     private var allQuizzAnswered: [Int : Quiz] = [:]
@@ -132,6 +139,7 @@ class QuizGameController: UITableViewController {
     private var showViewReponse = false
     private var isGoodAnswer = false
     private var numberRandom = 0
+    private var numberRandomUserDefaultsKey:String!
     private var allNumberRandom: [Int : Int] = [:]
     
     private var totalQuestion:Int!
@@ -143,6 +151,10 @@ class QuizGameController: UITableViewController {
         super.viewDidLoad()
         
         loadParameterData()
+        
+        keyGame = "\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))"
+        daoQuiz = DAOQuiz()
+        daoQuiz.addScore(date: currentStringDate(), totalQuestion: totalQuestion!, totalTrouve: totalBonneReponse!, totalErreur: totalMauvaiseReponse!, keyGame: keyGame!)
         
         if quizMenuSelected != nil{
             title = quizMenuSelected!
@@ -360,6 +372,8 @@ class QuizGameController: UITableViewController {
         }
         //--
         if let fileJsonPath = mFileJsonPath{
+            numberRandomUserDefaultsKey = mFileJsonPath
+            //--
             DispatchQueue.main.async {
                 do{
                     let filePath = Bundle.main.path(forResource: fileJsonPath, ofType: "json")
@@ -392,9 +406,25 @@ class QuizGameController: UITableViewController {
     
     // Random
     private func randomValue(_ n:Int) -> Int{
-        var randomValue = Int(arc4random_uniform(UInt32(n)))
+        var nsAllNumberRandom = UserDefaults.standard.string(forKey: numberRandomUserDefaultsKey) ?? ""
+        print("Random List = "+nsAllNumberRandom)
+        let allNumberRandomArray = nsAllNumberRandom.components(separatedBy: "--")
+        print("Total Random = \(allNumberRandomArray.count)")
+        var randomValue = 0
+        // Method : Do-While
+        repeat{
+            randomValue = Int(arc4random_uniform(UInt32(n)))
+        }
+        while nsAllNumberRandom.contains("-\(randomValue)-")
+        //--
         if allNumberRandom.index(forKey: numeroQuestion!) == nil{
             allNumberRandom.updateValue(randomValue, forKey: numeroQuestion!)
+            // Save new value in UserDefaults
+            nsAllNumberRandom += "-\(randomValue)-"
+            //--
+            if allNumberRandomArray.count+1 >= allQuiz.count{ nsAllNumberRandom = "-\(randomValue)-" }
+            //--
+            UserDefaults.standard.set(nsAllNumberRandom, forKey: numberRandomUserDefaultsKey)
         }
         else{
             randomValue = allNumberRandom[numeroQuestion!]!
@@ -462,15 +492,18 @@ class QuizGameController: UITableViewController {
         let components = calendar.dateComponents([Calendar.Component.day, Calendar.Component.month, Calendar.Component.year], from: dateCurrent)
         let day = Int(components.day!) >= 10 ? "\(components.day!)" : "0\(components.day!)"
         let month = Int(components.month!) >= 10 ? "\(components.month!)" : "0\(components.month!)"
-        return "\(day)/\(month)/\(components.year!)"
+        let currentDate = "\(day)/\(month)/\(components.year!)"
+        return currentDate
     }
     
     // Load parameters data
     private func loadParameterData(){
         cellQuestion.isUserInteractionEnabled = false
         cellScore.isUserInteractionEnabled = false
+        // Retrieve from UserDefaults
+        let nsTotalQuestion = UserDefaults.standard.string(forKey: "nsTotalQuestion") ?? "10"
         //--
-        totalQuestion = 10
+        totalQuestion = Int(nsTotalQuestion)
         numeroQuestion = 1
         totalBonneReponse = 0
         totalMauvaiseReponse = 0
