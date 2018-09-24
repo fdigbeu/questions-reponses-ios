@@ -23,31 +23,29 @@ class DAOQuiz{
             print("Error opening database")
             return
         }
-        // Create score table
-        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS "+tableScore+" (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, totalQuestion INTEGER, totalTrouve INTEGER, totalErreur INTEGER, keyGame TEXT, categorie TEXT)", nil, nil, nil) != SQLITE_OK {
-            let errmsg = String(cString: sqlite3_errmsg(db)!)
-            print("Error creating qr_score table: \(errmsg)")
-            return
-        }
-        // Create game table
-        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS "+tableGame+" (id INTEGER PRIMARY KEY AUTOINCREMENT, keyGame TEXT, question TEXT, categorie TEXT, choix1 TEXT, choix2 TEXT, choix3 TEXT, choixCorrecte TEXT, explication TEXT, userChoix TEXT, randomValue TEXT, confirmeReponse TEXT)", nil, nil, nil) != SQLITE_OK {
-            let errmsg = String(cString: sqlite3_errmsg(db)!)
-            print("Error creating qr_score table: \(errmsg)")
-            return
-        }
         // All is fine
-        print("=================================== init(Success) : All is fine ! ===================================")
+        print("======================= init(Success) : All is fine ! =======================")
     }
     
+    
     // Score
+    private func createScoreTable(){
+        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS "+tableScore+" (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, totalQuestion INTEGER, totalTrouve INTEGER, totalErreur INTEGER, keyGame TEXT, categorie TEXT)", nil, nil, nil) != SQLITE_OK {
+            let errmsg = String(cString: sqlite3_errmsg(db)!)
+            print("======================= Error creating qr_score table: \(errmsg) =======================")
+            return
+        }
+    }
+    
     func getAllScoresInProgress() -> [Quiz] {
+        createScoreTable()
         var stmt: OpaquePointer?
         //This is our select query
         let queryString = "SELECT * FROM "+tableScore+" ORDER BY id DESC"
         //Preparing the query
         if sqlite3_prepare(db, queryString, -1, &stmt, nil) != SQLITE_OK{
             let errmsg = String(cString: sqlite3_errmsg(db)!)
-            print("Error preparing retrieve: \(errmsg)")
+            print("======================= Error preparing retrieve: \(errmsg) =======================")
         }
         //Traversing through all the records
         var allQuizz = [Quiz]()
@@ -69,6 +67,7 @@ class DAOQuiz{
     }
     
     func getAllScoresFinished() -> [Quiz] {
+        createScoreTable()
         var stmt: OpaquePointer?
         //This is our select query
         let queryString = "SELECT * FROM "+tableScore+" ORDER BY id DESC"
@@ -97,9 +96,10 @@ class DAOQuiz{
     }
     
     func addScore(date:String!, totalQuestion:Int!, totalTrouve:Int!, totalErreur:Int!, keyGame:String!, categorie:String!) -> Void {
-         var stmt: OpaquePointer?
+        createScoreTable()
+        var stmt: OpaquePointer?
         //The insert query
-        let queryString = "INSERT INTO \(tableScore) (date, totalQuestion, totalTrouve, totalErreur, keyGame) VALUES ('\(date!)', '\(totalQuestion!)', '\(totalTrouve!)', '\(totalErreur!)', '\(keyGame!)', '\(categorie!)')"
+        let queryString = "INSERT INTO \(tableScore) (date, totalQuestion, totalTrouve, totalErreur, keyGame, categorie) VALUES ('\(date!)', '\(totalQuestion!)', '\(totalTrouve!)', '\(totalErreur!)', '\(keyGame!)', '\(categorie!.replacingOccurrences(of: "'", with: "''"))')"
         //Preparing the query
         if sqlite3_prepare(db, queryString, -1, &stmt, nil) != SQLITE_OK{
             let errmsg = String(cString: sqlite3_errmsg(db)!)
@@ -116,6 +116,7 @@ class DAOQuiz{
     }
     
     func modifyScore(totalTrouve:Int!, totalErreur:Int!, keyGame:String!) -> Void {
+        createScoreTable()
         var stmt: OpaquePointer?
         //The update query
         let queryString = "UPDATE \(tableScore) SET totalTrouve = '\(totalTrouve!)', totalErreur = '\(totalErreur!)' WHERE keyGame = '\(keyGame!)'"
@@ -135,6 +136,7 @@ class DAOQuiz{
     }
     
     func deleteAllScore() -> Void{
+        createScoreTable()
         var stmt: OpaquePointer?
         //The delete query
         let queryString = "DELETE FROM "+tableScore
@@ -152,7 +154,17 @@ class DAOQuiz{
         print("================ Score delete successfully ! ================")
     }
     
+    // Game
+    private func createGameTable(){
+        if sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS "+tableGame+" (id INTEGER PRIMARY KEY AUTOINCREMENT, keyGame TEXT, question TEXT, categorie TEXT, choix1 TEXT, choix2 TEXT, choix3 TEXT, choixCorrecte TEXT, explication TEXT, userChoix TEXT, randomValue TEXT, confirmeReponse TEXT)", nil, nil, nil) != SQLITE_OK {
+            let errmsg = String(cString: sqlite3_errmsg(db)!)
+            print("Error creating qr_score table: \(errmsg)")
+            return
+        }
+    }
+    
     func addGame(keyGame:String!, question:String!, categorie:String!, choix1:String!, choix2:String!, choix3:String!, choixCorrecte:String!, explication:String!, userChoix:String!, randomValue:String!, confirmeReponse:String!) -> Void {
+        createGameTable()
         var stmt: OpaquePointer?
         //The insert query
         let queryString = "INSERT INTO \(tableGame) (keyGame, question, categorie, choix1, choix2, choix3, choixCorrecte, explication, userChoix, randomValue, confirmeReponse) VALUES ('\(keyGame!)', '\(question!.replacingOccurrences(of: "'", with: "''"))', '\(categorie!.replacingOccurrences(of: "'", with: "''"))', '\(choix1!.replacingOccurrences(of: "'", with: "''"))', '\(choix2!.replacingOccurrences(of: "'", with: "''"))', '\(choix3!.replacingOccurrences(of: "'", with: "''"))', '\(choixCorrecte!)', '\(explication!.replacingOccurrences(of: "'", with: "''"))', '\(userChoix!.replacingOccurrences(of: "'", with: "''"))', '\(randomValue!)', '\(confirmeReponse!.replacingOccurrences(of: "'", with: "''"))')"
@@ -172,6 +184,7 @@ class DAOQuiz{
     }
     
     func getAllGames(keyGame:String!) -> [Quiz] {
+        createGameTable()
         var stmt: OpaquePointer?
         //This is our select query
         let queryString = "SELECT * FROM "+tableGame+" WHERE keyGame = '\(keyGame!)'"

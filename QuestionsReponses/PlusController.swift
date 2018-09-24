@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MessageUI
 
-class PlusController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class PlusController: UIViewController, UITableViewDataSource, UITableViewDelegate, MFMailComposeViewControllerDelegate {
     
     // Ref widgets
     @IBOutlet weak var tableViewPlus: UITableView!
@@ -45,28 +46,29 @@ class PlusController: UIViewController, UITableViewDataSource, UITableViewDelega
         print("Numéro du plus sélectionné : \(indexPath.row)")
         switch indexPath.row {
         case 0:  // Quiz terminés
-            performSegue(withIdentifier: segueScoreIdentifier, sender: menuPlus[indexPath.row])
-            /*let allQuizzFinished = daoQuiz.getAllScoresFinished()
+            let allQuizzFinished = daoQuiz.getAllScoresFinished()
             if allQuizzFinished.count > 0{
                 performSegue(withIdentifier: segueScoreIdentifier, sender: menuPlus[indexPath.row])
             }
             else{
-               showUIAlertMessage(titre:menuPlus[indexPath.row], message:"Vous n'avez pas de quiz terminés")
-            }*/
+               showUIAlertMessage(titre:"Aucun \(menuPlus[indexPath.row].lowercased())", message:"Vous n'avez pas de quiz terminés")
+            }
         case 1:  // Quiz en cours
-            performSegue(withIdentifier: segueScoreIdentifier, sender: menuPlus[indexPath.row])
-            /*let allQuizzInProgress = daoQuiz.getAllScoresInProgress()
+            let allQuizzInProgress = daoQuiz.getAllScoresInProgress()
             if allQuizzInProgress.count > 0{
                 performSegue(withIdentifier: segueScoreIdentifier, sender: menuPlus[indexPath.row])
             }
             else{
-                showUIAlertMessage(titre:menuPlus[indexPath.row], message:"Vous n'avez pas de quiz en cours")
-            }*/
+                showUIAlertMessage(titre:"Aucun \(menuPlus[indexPath.row].lowercased())", message:"Vous n'avez pas de quiz en cours")
+            }
         case 2:  // Croissance spirituelle
             performSegue(withIdentifier: segueGrowthIdentifier, sender: menuPlus[indexPath.row])
-        case 3: break // Laisser un message
-        case 4: break // Partager l'application
-        case 5: break // Nombre de questions
+        case 3:  // Laisser un message
+            sendEmail()
+        case 4:  // Partager l'application
+            shareApp()
+        case 5:  // Nombre de questions
+            showUIAlertTotalOfQuestion()
         case 6: break // Niveaux de difficulté
         case 7: break // Rechercher un média
         case 8: break // Mettre à jour l'application
@@ -97,6 +99,20 @@ class PlusController: UIViewController, UITableViewDataSource, UITableViewDelega
         else{}
     }
     
+    private func showUIAlertTotalOfQuestion(){
+        let nsTotalQuestion = UserDefaults.standard.string(forKey: "nsTotalQuestion") ?? "10"
+        let alertController = UIAlertController(title: "Nombre de questions", message: "Le nombre de questions par quiz est actuellement de \(nsTotalQuestion)", preferredStyle: .alert)
+        let action10 = UIAlertAction(title: "10 Quiz", style: .default) { (action:UIAlertAction) in
+            UserDefaults.standard.set("10", forKey: "nsTotalQuestion")
+        }
+        let action20 = UIAlertAction(title: "20 Quiz", style: .default) { (action:UIAlertAction) in
+            UserDefaults.standard.set("20", forKey: "nsTotalQuestion")
+        }
+        alertController.addAction(action10)
+        alertController.addAction(action20)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
     private func showUIAlertMessage(titre:String, message:String){
         let alertController = UIAlertController(title: titre, message: message, preferredStyle: .alert)
         let actionOK = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction) in
@@ -104,6 +120,36 @@ class PlusController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         alertController.addAction(actionOK)
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    private func shareApp() {
+        if MFMessageComposeViewController.canSendText() {
+            let sms = MFMessageComposeViewController()
+            sms.messageComposeDelegate = (self as! MFMessageComposeViewControllerDelegate)
+            sms.recipients = []
+            sms.body = "Bonjour, \nBible quiz: https://www.levraievangile.org/uploads/questions-reponses.ipa"
+            present(sms, animated: true, completion: nil)
+        } else {
+            // show failure alert
+            showUIAlertMessage(titre:"Erreur d'envoi", message:"L'envoi de votre message par sms a échoué !")
+        }
+    }
+    
+    private func sendEmail() {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+            mail.setToRecipients(["contact@levraievangile.org"])
+            mail.setMessageBody("Gloire à Jésus-Christ !", isHTML: true)
+            present(mail, animated: true)
+        } else {
+            // show failure alert
+            showUIAlertMessage(titre:"Erreur d'envoi", message:"L'envoi de votre message par mail a échoué !")
+        }
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
     }
 
 }
