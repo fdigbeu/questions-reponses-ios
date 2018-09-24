@@ -76,28 +76,28 @@ class ScoreCell: UITableViewCell {
         )
     }
     
-    private func loadStarData(totalTrouve:Int, totalQuestion:Int){
+    func loadStarData(totalTrouve:Int, totalQuestion:Int){
         let totalRatio:Double! = 10.0/Double(totalQuestion) * Double(totalTrouve)
-        if(totalRatio==0.5) { self.imageEtoile1.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==1.0) { self.imageEtoile1.image = #imageLiteral(resourceName: "star_fill_16") }
-        if(totalRatio==1.5) { self.imageEtoile2.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==2.0) { self.imageEtoile2.image = #imageLiteral(resourceName: "star_fill_16") }
-        if(totalRatio==2.5) { self.imageEtoile3.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==3.0) { self.imageEtoile3.image = #imageLiteral(resourceName: "star_fill_16") }
-        if(totalRatio==3.5) { self.imageEtoile4.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==4.0) { self.imageEtoile4.image = #imageLiteral(resourceName: "star_fill_16") }
-        if(totalRatio==4.5) { self.imageEtoile5.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==5.0) { self.imageEtoile5.image = #imageLiteral(resourceName: "star_fill_16") }
-        if(totalRatio==5.5) { self.imageEtoile6.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==6.0) { self.imageEtoile6.image = #imageLiteral(resourceName: "star_fill_16") }
-        if(totalRatio==6.5) { self.imageEtoile7.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==7.0) { self.imageEtoile7.image = #imageLiteral(resourceName: "star_fill_16") }
-        if(totalRatio==7.5) { self.imageEtoile8.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==8.0) { self.imageEtoile8.image = #imageLiteral(resourceName: "star_fill_16") }
-        if(totalRatio==8.5) { self.imageEtoile9.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==9.0) { self.imageEtoile9.image = #imageLiteral(resourceName: "star_fill_16") }
-        if(totalRatio==9.5) { self.imageEtoile10.image = #imageLiteral(resourceName: "star_middle_fill_16") }
-        if(totalRatio==10.0) { self.imageEtoile10.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=0.5) { self.imageEtoile1.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=1.0) { self.imageEtoile1.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=1.5) { self.imageEtoile2.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=2.0) { self.imageEtoile2.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=2.5) { self.imageEtoile3.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=3.0) { self.imageEtoile3.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=3.5) { self.imageEtoile4.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=4.0) { self.imageEtoile4.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=4.5) { self.imageEtoile5.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=5.0) { self.imageEtoile5.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=5.5) { self.imageEtoile6.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=6.0) { self.imageEtoile6.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=6.5) { self.imageEtoile7.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=7.0) { self.imageEtoile7.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=7.5) { self.imageEtoile8.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=8.0) { self.imageEtoile8.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=8.5) { self.imageEtoile9.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=9.0) { self.imageEtoile9.image = #imageLiteral(resourceName: "star_fill_16") }
+        if(totalRatio>=9.5) { self.imageEtoile10.image = #imageLiteral(resourceName: "star_middle_fill_16") }
+        if(totalRatio>=10.0) { self.imageEtoile10.image = #imageLiteral(resourceName: "star_fill_16") }
     }
 
 }

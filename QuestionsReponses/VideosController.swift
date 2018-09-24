@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import AVKit
 
-class VideosController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class VideosController: UITableViewController {
     
     // Ref widgets
     @IBOutlet weak var tableViewVideos: UITableView!
@@ -28,12 +28,12 @@ class VideosController: UIViewController, UITableViewDataSource, UITableViewDele
             self.common.hideActivityIndicatorView()
             videosArray.forEach({ (video) in
                 DispatchQueue.main.async {
-                    self.tableViewVideos.reloadData()
+                    self.tableView.reloadData()
                 }
                 //print(video.title!)
             })
         }
-        self.tableViewVideos.tableFooterView = UIView()
+        self.tableView.tableFooterView = UIView()
     }
 
     override func didReceiveMemoryWarning() {
@@ -65,12 +65,12 @@ class VideosController: UIViewController, UITableViewDataSource, UITableViewDele
     }
     
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.videos.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableViewVideos.dequeueReusableCell(withIdentifier: "idVideosCell") as? VideosCell else { return UITableViewCell() }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "idVideosCell") as? VideosCell else { return UITableViewCell() }
         //cell.labelVideosTitle.text = videos[indexPath.row].title!
         var tableDuration = (videos[indexPath.row].duration!).components(separatedBy: ":")
         let duration = (Int(tableDuration[0])!*60)+Int(tableDuration[1])!
@@ -78,7 +78,7 @@ class VideosController: UIViewController, UITableViewDataSource, UITableViewDele
         return cell.loadDataCell(titleValue: videos[indexPath.row].title!, subTitleValue: "\(duration) min | " + videos[indexPath.row].author!)
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let urlVideo = videos[indexPath.row].urlaccess! + videos[indexPath.row].source!
         print("Numéro de la vidéo sélectionnée : \(indexPath.row) : "+urlVideo)
         //--
@@ -89,11 +89,11 @@ class VideosController: UIViewController, UITableViewDataSource, UITableViewDele
         self.present(playerViewController, animated: true) { playerViewController.player!.play() }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
     
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
 }

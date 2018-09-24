@@ -9,10 +9,10 @@
 import UIKit
 import MessageUI
 
-class PlusController: UIViewController, UITableViewDataSource, UITableViewDelegate, MFMailComposeViewControllerDelegate {
+class PlusController: UITableViewController, MFMailComposeViewControllerDelegate {
     
     // Ref widgets
-    @IBOutlet weak var tableViewPlus: UITableView!
+    //@IBOutlet weak var tableViewPlus: UITableView!
     
     // Ref attributes
     private let menuPlus:[String] = ["Quiz terminés", "Quiz en cours", "Croissance spirituelle", "Laisser un message", "Partager l'application", "Nombre de questions", "Niveaux de difficulté", "Rechercher un média", "Mettre à jour l'application"]
@@ -27,22 +27,22 @@ class PlusController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         daoQuiz = DAOQuiz()
         title = "Plus"
-        tableViewPlus.tableFooterView = UIView()
+        self.tableView.tableFooterView = UIView()
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return menuPlus.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableViewPlus.dequeueReusableCell(withIdentifier: "idPlusCell") as? PlusCell else { return UITableViewCell() }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "idPlusCell") as? PlusCell else { return UITableViewCell() }
         //cell.imagePlus.image = menuImagePlus[indexPath.row]
        // cell.labelPlusTitle.text = menuPlus[indexPath.row]
         return cell.loadDataCell(imageValue: menuImagePlus[indexPath.row], titleValue: menuPlus[indexPath.row])
     }
     
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Numéro du plus sélectionné : \(indexPath.row)")
         switch indexPath.row {
         case 0:  // Quiz terminés
@@ -76,11 +76,11 @@ class PlusController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
     
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
     

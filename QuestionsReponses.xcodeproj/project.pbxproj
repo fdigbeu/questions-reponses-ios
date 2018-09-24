@@ -16,6 +16,7 @@
 		6461508F213D8A26002EA133 /* neviim_prophete.json in Resources */ = {isa = PBXBuildFile; fileRef = 64615089213D8A25002EA133 /* neviim_prophete.json */; };
 		64615090213D8A26002EA133 /* ketouvim_ecrits.json in Resources */ = {isa = PBXBuildFile; fileRef = 6461508A213D8A25002EA133 /* ketouvim_ecrits.json */; };
 		64615092213D9C7C002EA133 /* Quiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64615091213D9C7C002EA133 /* Quiz.swift */; };
+		64626BB8215958A800759D9F /* ExplicationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64626BB7215958A800759D9F /* ExplicationCell.swift */; };
 		647521E721319D7D0069402D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647521E621319D7D0069402D /* AppDelegate.swift */; };
 		647521EC21319D7D0069402D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 647521EA21319D7D0069402D /* Main.storyboard */; };
 		647521EF21319D7D0069402D /* QuestionsReponses.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 647521ED21319D7D0069402D /* QuestionsReponses.xcdatamodeld */; };
@@ -72,6 +73,7 @@
 		64615089213D8A25002EA133 /* neviim_prophete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = neviim_prophete.json; sourceTree = "<group>"; };
 		6461508A213D8A25002EA133 /* ketouvim_ecrits.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ketouvim_ecrits.json; sourceTree = "<group>"; };
 		64615091213D9C7C002EA133 /* Quiz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quiz.swift; sourceTree = "<group>"; };
+		64626BB7215958A800759D9F /* ExplicationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicationCell.swift; sourceTree = "<group>"; };
 		647521E321319D7C0069402D /* QuestionsReponses.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuestionsReponses.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		647521E621319D7D0069402D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		647521EB21319D7D0069402D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				64E0045C2156A0FC00B9C0F6 /* GrowthSpiritCell.swift */,
 				64E0045E2156A12600B9C0F6 /* ScoreController.swift */,
 				64E004602156A14800B9C0F6 /* GrowthSpiritController.swift */,
+				64626BB7215958A800759D9F /* ExplicationCell.swift */,
 			);
 			path = QuestionsReponses;
 			sourceTree = "<group>";
@@ -383,6 +386,7 @@
 				647522202131B55B0069402D /* HomeController.swift in Sources */,
 				647521EF21319D7D0069402D /* QuestionsReponses.xcdatamodeld in Sources */,
 				647521E721319D7D0069402D /* AppDelegate.swift in Sources */,
+				64626BB8215958A800759D9F /* ExplicationCell.swift in Sources */,
 				6475221C2131B2870069402D /* AudiosController.swift in Sources */,
 				64615092213D9C7C002EA133 /* Quiz.swift in Sources */,
 				6475222A2131F0890069402D /* PlusCell.swift in Sources */,

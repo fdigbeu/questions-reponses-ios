@@ -8,10 +8,10 @@
 
 import UIKit
 
-class QuizController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class QuizController: UITableViewController {
     // Ref widgets
-    @IBOutlet weak var tableViewQuiz: UITableView!
-    @IBOutlet weak var viewQuizItem: UIView!
+    //@IBOutlet weak var tableViewQuiz: UITableView!
+    //@IBOutlet weak var viewQuizItem: UIView!
     
     // Ref attributes
     let menuQuizz:[String] = ["Toute la Bible", "Torah (Loi)", "Nevi'im (Prophètes)", "Ketouvim (Écrits)", "Évangiles", "Testament de Jésus"]
@@ -20,28 +20,28 @@ class QuizController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Quiz"
-        tableViewQuiz.tableFooterView = UIView()
+        self.tableView.tableFooterView = UIView()
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return menuQuizz.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableViewQuiz.dequeueReusableCell(withIdentifier: "idQuizCell") as? QuizCell else { return UITableViewCell() }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "idQuizCell") as? QuizCell else { return UITableViewCell() }
         return cell.loadDataCell(itemValue: menuQuizz[indexPath.row])
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Numéro du quiz sélectionné : \(indexPath.row)")
         performSegue(withIdentifier: segueIdentifier, sender: menuQuizz[indexPath.row])
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
     
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
     

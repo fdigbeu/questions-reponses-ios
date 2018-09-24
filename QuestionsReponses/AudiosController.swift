@@ -10,10 +10,7 @@ import UIKit
 import AVFoundation
 import AVKit
 
-class AudiosController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    
-    // Ref widgets
-    @IBOutlet weak var tableViewAudios: UITableView!
+class AudiosController: UITableViewController {
     
     // Ref attributes
     private final var urlAudios = "https://www.levraievangile.org/webservice/audios/questions-reponses/"
@@ -28,12 +25,12 @@ class AudiosController: UIViewController, UITableViewDataSource, UITableViewDele
             self.common.hideActivityIndicatorView()
             audiosArray.forEach({ (audio) in
                 DispatchQueue.main.async {
-                    self.tableViewAudios.reloadData()
+                    self.tableView.reloadData()
                 }
                 //print(audio.title!)
             })
         }
-        self.tableViewAudios.tableFooterView = UIView()
+        self.tableView.tableFooterView = UIView()
     }
 
     override func didReceiveMemoryWarning() {
@@ -65,12 +62,12 @@ class AudiosController: UIViewController, UITableViewDataSource, UITableViewDele
     }
     
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.audios.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableViewAudios.dequeueReusableCell(withIdentifier: "idAudiosCell") as? AudiosCell else { return UITableViewCell() }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "idAudiosCell") as? AudiosCell else { return UITableViewCell() }
         //cell.labelAudiosTitle.text = audios[indexPath.row].title!
         var tableDuration = (audios[indexPath.row].duration!).components(separatedBy: ":")
         let duration = (Int(tableDuration[0])!*60)+Int(tableDuration[1])!
@@ -78,7 +75,7 @@ class AudiosController: UIViewController, UITableViewDataSource, UITableViewDele
         return cell.loadDataCell(titleValue: audios[indexPath.row].title!, subTitleValue: "\(duration) min | " + audios[indexPath.row].author!)
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let urlAudio = audios[indexPath.row].urlaccess! + audios[indexPath.row].source!
         print("Numéro de l'audio sélectionné : \(indexPath.row)")
         //--
@@ -89,11 +86,11 @@ class AudiosController: UIViewController, UITableViewDataSource, UITableViewDele
         self.present(playerViewController, animated: true) { playerViewController.player!.play() }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
     
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
 }
