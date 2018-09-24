@@ -7,22 +7,35 @@
 //
 
 import UIKit
-import WebKit
 
-class ExplicationController: UIViewController, WKUIDelegate {
-    
-    @IBOutlet weak var explicationTextView: UITextView!
+class ExplicationController: UITableViewController {
     
     var explicationSelected:String?
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //--
         title = "Explication"
+        self.tableView.tableFooterView = UIView()
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "idExplicationCell") as? ExplicationCell else { return UITableViewCell() }
+        //--
         if let explication = explicationSelected{
-            print(explication)
-            explicationTextView.text = explication
+            return cell.loadDataCell(titleValue: explication)
         }
+        return UITableViewCell()
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
 }
