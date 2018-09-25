@@ -95,6 +95,19 @@ class DAOQuiz{
         return allQuizz
     }
     
+    func isKeyGameExists(keyGame:String!)-> Bool {
+        createScoreTable()
+        var stmt: OpaquePointer?
+        //This is our select query
+        let queryString = "SELECT * FROM "+tableScore+" WHERE keyGame = '\(keyGame!)'"
+        //Preparing the query
+        if sqlite3_prepare(db, queryString, -1, &stmt, nil) != SQLITE_OK{
+            let errmsg = String(cString: sqlite3_errmsg(db)!)
+            print("================ Error preparing retrieve: \(errmsg) ================")
+        }
+        return sqlite3_step(stmt) == SQLITE_ROW
+    }
+    
     func addScore(date:String!, totalQuestion:Int!, totalTrouve:Int!, totalErreur:Int!, keyGame:String!, categorie:String!) -> Void {
         createScoreTable()
         var stmt: OpaquePointer?

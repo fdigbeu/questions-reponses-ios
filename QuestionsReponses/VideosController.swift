@@ -81,6 +81,8 @@ class VideosController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let urlVideo = videos[indexPath.row].urlaccess! + videos[indexPath.row].source!
         print("Numéro de la vidéo sélectionnée : \(indexPath.row) : "+urlVideo)
+        // Forced sound
+        try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: [])
         //--
         let videoURL = URL(string: urlVideo)
         let player = AVPlayer(url: videoURL!)

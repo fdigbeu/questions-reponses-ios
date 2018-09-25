@@ -78,6 +78,8 @@ class AudiosController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let urlAudio = audios[indexPath.row].urlaccess! + audios[indexPath.row].source!
         print("Numéro de l'audio sélectionné : \(indexPath.row)")
+        // Forced sound
+        try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: [])
         //--
         let audioURL = URL(string: urlAudio)
         let player = AVPlayer(url: audioURL!)

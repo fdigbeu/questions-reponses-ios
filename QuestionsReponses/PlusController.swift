@@ -11,9 +11,6 @@ import MessageUI
 
 class PlusController: UITableViewController, MFMailComposeViewControllerDelegate {
     
-    // Ref widgets
-    //@IBOutlet weak var tableViewPlus: UITableView!
-    
     // Ref attributes
     private let menuPlus:[String] = ["Quiz terminés", "Quiz en cours", "Croissance spirituelle", "Laisser un message", "Partager l'application", "Nombre de questions", "Niveaux de difficulté", "Rechercher un média", "Mettre à jour l'application"]
     private let menuImagePlus:[UIImage] = [#imageLiteral(resourceName: "quiz_end_48"), #imageLiteral(resourceName: "quiz_not_end_48"), #imageLiteral(resourceName: "quiz_progress_48"), #imageLiteral(resourceName: "message_48"), #imageLiteral(resourceName: "share_48"), #imageLiteral(resourceName: "level_48"), #imageLiteral(resourceName: "number_question_48"), #imageLiteral(resourceName: "search_48"), #imageLiteral(resourceName: "updates_48")]
@@ -36,8 +33,6 @@ class PlusController: UITableViewController, MFMailComposeViewControllerDelegate
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = self.tableView.dequeueReusableCell(withIdentifier: "idPlusCell") as? PlusCell else { return UITableViewCell() }
-        //cell.imagePlus.image = menuImagePlus[indexPath.row]
-       // cell.labelPlusTitle.text = menuPlus[indexPath.row]
         return cell.loadDataCell(imageValue: menuImagePlus[indexPath.row], titleValue: menuPlus[indexPath.row])
     }
     
@@ -64,7 +59,13 @@ class PlusController: UITableViewController, MFMailComposeViewControllerDelegate
         case 2:  // Croissance spirituelle
             performSegue(withIdentifier: segueGrowthIdentifier, sender: menuPlus[indexPath.row])
         case 3:  // Laisser un message
-            sendEmail()
+            let mailComposeViewController = configureMailController()
+            if MFMailComposeViewController.canSendMail(){
+                self.present(mailComposeViewController, animated: true, completion: nil)
+            }
+            else{
+                showUIAlertMessage(titre:"Erreur d'envoi", message:"L'envoi de votre message par mail a échoué !")
+            }
         case 4:  // Partager l'application
             shareApp()
         case 5:  // Nombre de questions
@@ -123,33 +124,21 @@ class PlusController: UITableViewController, MFMailComposeViewControllerDelegate
     }
     
     private func shareApp() {
-        if MFMessageComposeViewController.canSendText() {
-            let sms = MFMessageComposeViewController()
-            sms.messageComposeDelegate = (self as! MFMessageComposeViewControllerDelegate)
-            sms.recipients = []
-            sms.body = "Bonjour, \nBible quiz: https://www.levraievangile.org/uploads/questions-reponses.ipa"
-            present(sms, animated: true, completion: nil)
-        } else {
-            // show failure alert
-            showUIAlertMessage(titre:"Erreur d'envoi", message:"L'envoi de votre message par sms a échoué !")
-        }
+        let items: [Any] = ["Bonjour, \nUne application de quiz sur la bible.\n", URL(string: "https://www.levraievangile.org/uploads/questions-reponses.ipa")!]
+        let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        present(activityController, animated: true)
     }
     
-    private func sendEmail() {
-        if MFMailComposeViewController.canSendMail() {
-            let mail = MFMailComposeViewController()
-            mail.mailComposeDelegate = self
-            mail.setToRecipients(["contact@levraievangile.org"])
-            mail.setMessageBody("Gloire à Jésus-Christ !", isHTML: true)
-            present(mail, animated: true)
-        } else {
-            // show failure alert
-            showUIAlertMessage(titre:"Erreur d'envoi", message:"L'envoi de votre message par mail a échoué !")
-        }
+    func configureMailController() -> MFMailComposeViewController {
+        let mail = MFMailComposeViewController()
+        mail.mailComposeDelegate = self
+        mail.setSubject("Message")
+        mail.setToRecipients(["postmaster@levraievangile.org"])
+        mail.setMessageBody("Gloire à Jésus-Christ !", isHTML: true)
+        return mail
     }
     
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         controller.dismiss(animated: true)
     }
-
 }

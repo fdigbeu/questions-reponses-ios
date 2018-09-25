@@ -115,8 +115,13 @@ class QuizGameController: UITableViewController {
             showViewReponse = true
             totalMauvaiseReponse = totalMauvaiseReponse! + 1
         }
-        //--
-        daoQuiz.modifyScore(totalTrouve: totalBonneReponse!, totalErreur: totalMauvaiseReponse!, keyGame: keyGame!)
+        // Verify if keyGame exists
+        if daoQuiz.isKeyGameExists(keyGame: keyGame!){
+            daoQuiz.modifyScore(totalTrouve: totalBonneReponse!, totalErreur: totalMauvaiseReponse!, keyGame: keyGame!)
+        }
+        else{
+            daoQuiz.addScore(date: currentStringDate(), totalQuestion: totalQuestion!, totalTrouve: totalBonneReponse!, totalErreur: totalMauvaiseReponse!, keyGame: keyGame!, categorie: quizMenuSelected!)
+        }
         //--
         self.loadQuizQuestion()
     }
@@ -157,7 +162,6 @@ class QuizGameController: UITableViewController {
             //--
             keyGame = "\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))-\(Int(arc4random_uniform(UInt32(99999))))"
             daoQuiz = DAOQuiz()
-            daoQuiz.addScore(date: currentStringDate(), totalQuestion: totalQuestion!, totalTrouve: totalBonneReponse!, totalErreur: totalMauvaiseReponse!, keyGame: keyGame!, categorie: quizMenuSelected!)
             //--
             loadJsonDataFromMenuSelected{ (allQuiz) in
                 // Download completed.
